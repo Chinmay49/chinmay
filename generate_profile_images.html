@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generate Profile Images</title>
+    <style>
+        .profile-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 100px;
+            font-weight: bold;
+            color: white;
+            margin: 10px;
+            cursor: pointer;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 20px;
+        }
+        .download-btn {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #4CC9B0;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .download-btn:hover {
+            background-color: #37B76F;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="imageContainer"></div>
+    <script>
+        const colors = [
+            '#4CC9B0', '#37B76F', '#2A93D5', '#FF6B6B',
+            '#9B59B6', '#3498DB', '#E67E22', '#1ABC9C'
+        ];
+
+        function generateImages() {
+            const container = document.getElementById('imageContainer');
+            
+            // Generate images for each letter
+            for (let i = 97; i <= 122; i++) {
+                const letter = String.fromCharCode(i);
+                const color = colors[i % colors.length];
+                
+                const wrapper = document.createElement('div');
+                wrapper.style.textAlign = 'center';
+                
+                const canvas = document.createElement('canvas');
+                canvas.width = 200;
+                canvas.height = 200;
+                const ctx = canvas.getContext('2d');
+                
+                // Draw circle
+                ctx.beginPath();
+                ctx.arc(100, 100, 100, 0, Math.PI * 2);
+                ctx.fillStyle = color;
+                ctx.fill();
+                
+                // Draw letter
+                ctx.font = 'bold 100px Arial';
+                ctx.fillStyle = 'white';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(letter.toUpperCase(), 100, 100);
+                
+                // Add to container
+                wrapper.appendChild(canvas);
+                
+                // Add download button
+                const downloadBtn = document.createElement('button');
+                downloadBtn.className = 'download-btn';
+                downloadBtn.textContent = `Download ${letter.toUpperCase()}`;
+                downloadBtn.onclick = () => {
+                    const link = document.createElement('a');
+                    link.download = `${letter}.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                };
+                wrapper.appendChild(downloadBtn);
+                
+                container.appendChild(wrapper);
+            }
+        }
+
+        // Generate images when page loads
+        window.onload = generateImages;
+    </script>
+</body>
+</html> 

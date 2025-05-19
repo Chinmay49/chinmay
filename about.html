@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>About | Adiyen HealthBot</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #e0f7fa 0%, #fffde4 100%);
+            color: #222;
+        }
+        .navbar {
+            background: #00bfae;
+            color: #fff;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            animation: fadeInDown 0.8s ease-out;
+        }
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .navbar-logo {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            animation: fadeIn 0.8s ease-out;
+        }
+        .navbar h1 {
+            margin: 0;
+            font-size: 2rem;
+            letter-spacing: 1px;
+        }
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            margin-left: 2rem;
+            transition: color 0.2s;
+            position: relative;
+        }
+        .navbar a:hover {
+            color: #e0f7fa;
+           
+        }
+        .navbar a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #fff;
+            transition: width 0.3s ease;
+        }
+
+        .navbar a:hover::after {
+            width: 100%;
+        }
+        .about-container {
+            max-width: 900px;
+            margin: 2.5rem auto;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px rgba(0,191,174,0.08);
+            padding: 2.5rem 2rem 2rem 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            animation: fadeInUp 1s ease-out;
+        }
+        .about-text {
+            flex: 2 1 320px;
+        }
+        .about-text h2 {
+            color: #00bfae;
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+            animation: slideInLeft 0.8s ease-out;
+        }
+        .about-text p {
+            font-size: 1.15rem;
+            line-height: 1.7;
+            margin-bottom: 1.2rem;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        .about-text p:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        .about-text p:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        .about-images {
+            flex: 1 1 260px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            align-items: center;
+            justify-content: center;
+        }
+        .about-images img {
+            width: 220px;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,191,174,0.13);
+            border: 2px solid #e0f7fa;
+            background: #f8f8f8;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        .about-images img:nth-child(1) {
+            animation-delay: 0.3s;
+        }
+        .about-images img:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+        .about-images img:nth-child(3) {
+            animation-delay: 0.7s;
+        }
+        .features {
+            margin-top: 2.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: center;
+        }
+        .feature-card {
+            background: #e0f7fa;
+            border-radius: 12px;
+            padding: 1.2rem 1.5rem;
+            min-width: 220px;
+            flex: 1 1 220px;
+            box-shadow: 0 2px 8px rgba(0,191,174,0.07);
+            text-align: center;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        .feature-card:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+        .feature-card:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+        .feature-card:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+        .feature-card:nth-child(4) {
+            animation-delay: 0.8s;
+        }
+        .feature-card h3 {
+            color: #00bfae;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+        .feature-card p {
+            font-size: 1rem;
+            color: #333;
+        }
+        .chatbot-demo {
+            margin: 3rem auto 0 auto;
+            max-width: 600px;
+            background: #f5f5f5;
+            border-radius: 14px;
+            padding: 2rem 1.5rem;
+            box-shadow: 0 2px 12px rgba(0,191,174,0.09);
+            text-align: center;
+            animation: fadeInUp 1s ease-out;
+        }
+        .chatbot-demo h4 {
+            color: #00bfae;
+            margin-bottom: 1rem;
+        }
+        .chatbot-bubble {
+            display: inline-block;
+            background: #00bfae;
+            color: #fff;
+            border-radius: 18px 18px 18px 4px;
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            box-shadow: 0 2px 8px rgba(0,191,174,0.08);
+            animation: popIn 0.7s cubic-bezier(.68,-0.55,.27,1.55);
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.7); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @media (max-width: 900px) {
+            .about-container {
+                flex-direction: column;
+                padding: 1.5rem 1rem;
+            }
+            .about-images {
+                flex-direction: row;
+                gap: 1rem;
+            }
+        }
+        @media (max-width: 600px) {
+            .navbar {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 1rem 1rem;
+            }
+            .about-container {
+                margin: 1rem;
+            }
+            .chatbot-demo {
+                padding: 1rem 0.5rem;
+            }
+        }
+        /* Enhanced Animations */
+        .about-text p {
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        .about-text p:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        .about-text p:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        .about-images img {
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        .about-images img:nth-child(1) {
+            animation-delay: 0.3s;
+        }
+        .about-images img:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+        .about-images img:nth-child(3) {
+            animation-delay: 0.7s;
+        }
+        .feature-card {
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        .feature-card:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+        .feature-card:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+        .feature-card:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+        .feature-card:nth-child(4) {
+            animation-delay: 0.8s;
+        }
+        .chatbot-bubble {
+            animation: popIn 0.7s cubic-bezier(.68,-0.55,.27,1.55);
+        }
+        /* Animation Keyframes */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        /* Hover Effects */
+        .feature-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,191,174,0.15);
+        }
+        .about-images img {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .about-images img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0,191,174,0.2);
+        }
+        button {
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            background: #00a89a !important;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <img src="https://media.licdn.com/dms/image/v2/D560BAQHOlu9Kvt3j-w/company-logo_200_200/company-logo_200_200/0/1723693199513/adiyen_logo?e=2147483647&v=beta&t=kEVRi6nTp9pxkLUMhIIA2aAZ812sK86X5bkAlZj5hqE" alt="Adiyen Logo" class="navbar-logo">
+            <h1>Adiyen HealthBot</h1>
+        </div>
+        <div>
+            <a href="https://adiyen.tech/">Home</a>
+            <a href="{% url 'auth_page' %}">Chat</a>
+        </div>
+    </nav>
+    <main>
+        <section class="about-container">
+            <div class="about-text">
+                <h2>About Adiyen HealthBot</h2>
+                <p>
+                    <strong>Adiyen HealthBot</strong> is your friendly, AI-powered health and wellness assistant. Our mission is to make reliable health information and wellness guidance accessible to everyone, anytime, anywhere.
+                </p>
+                <p>
+                    Whether you have questions about symptoms, need tips for a healthier lifestyle, or want to track your wellness journey, Adiyen HealthBot is here to help. Our chatbot leverages the latest in AI and medical knowledge to provide you with instant, trustworthy answers and support.
+                </p>
+                <p>
+                    <em>Note:</em> Adiyen HealthBot is not a substitute for professional medical advice, diagnosis, or treatment. Always consult with a qualified healthcare provider for serious concerns.
+                </p>
+            </div>
+  <div class="about-images">
+    <img src="https://images.unsplash.com/photo-1483721310020-03333e577078??auto=format&fit=crop&w=800&q=80" alt="Doctor with stethoscope">
+<img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd??auto=format&fit=crop&w=800&q=80" alt="Healthy food">
+
+    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b??auto=format&fit=crop&w=800&q=80"
+         alt="Yoga and wellness">
+  </div>
+</div>
+        </section>
+        <section class="features">
+            <div class="feature-card">
+                <h3>24/7 Health Guidance</h3>
+                <p>Get instant answers to your health and wellness questions, anytime you need.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Personalized Tips</h3>
+                <p>Receive tailored advice on nutrition, exercise, mental health, and more.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Symptom Checker</h3>
+                <p>Describe your symptoms and get information on possible causes and next steps.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Privacy First</h3>
+                <p>Your conversations are confidential and your data is protected.</p>
+            </div>
+        </section>
+        <section class="chatbot-demo">
+            <h4>Let's focus on our health and wellness:)</h4>
+            
+            <br>
+            <button onclick="window.location.href='{% url 'auth_page' %}'" style="margin-top:1rem;background:#00bfae;color:#fff;border:none;padding:0.7rem 1.3rem;border-radius:8px;font-size:1rem;cursor:pointer;box-shadow:0 2px 8px rgba(0,191,174,0.08);transition:background 0.2s;">chat with HealthBot</button>
+        </section>
+    </main>
+    <script>
+        function showExample() {
+            const bubble = document.getElementById('chatbot-bubble');
+            bubble.textContent = "For example, you can ask: 'What are some tips for better sleep?' or 'What should I eat for a healthy heart?'";
+            bubble.style.animation = "none";
+            void bubble.offsetWidth; // trigger reflow
+            bubble.style.animation = null;
+        }
+    </script>
+</body>
+</html>

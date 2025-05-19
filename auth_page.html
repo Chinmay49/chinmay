@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login/ Create profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #e0f7fa 0%, #fffde4 100%);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            animation: fadeIn 1.2s ease-in-out;
+            position: relative;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        .navbar {
+            background: #00bfae;
+            color: #fff;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            animation: fadeInDown 0.8s ease-out;
+            position: relative;
+            z-index: 2;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .navbar-logo {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .navbar h1 {
+            margin: 0;
+            font-size: 2rem;
+            letter-spacing: 1px;
+        }
+
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            margin-left: 2rem;
+            transition: color 0.2s;
+            position: relative;
+        }
+
+        .navbar a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #fff;
+            transition: width 0.3s ease;
+        }
+
+        .navbar a:hover::after {
+            width: 100%;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 1500px;
+            margin: 40px auto;
+            padding: 15px 20px;
+            animation: slideUp 1s ease-out;
+            position: relative;
+            z-index: 1;
+            gap: 3rem;
+            flex: 1;
+        }
+
+        .forms-wrapper {
+            display: flex;
+            gap: 3rem;
+            width: 100%;
+            justify-content: center;
+            flex-wrap: wrap;
+            perspective: 1000px;
+        }
+
+        .form-section {
+            flex: 1;
+            min-width: 320px;
+            max-width: 450px;
+            margin-left: 100px;
+            transform-style: preserve-3d;
+            animation: formAppear 0.8s ease-out forwards;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.98);
+            padding: 2.5rem 2rem;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 191, 174, 0.15);
+            width: 100%;
+            transition: all 0.4s ease;
+            transform-style: preserve-3d;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 191, 174, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        form::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #00bfae, #00a89a);
+        }
+
+        form:hover {
+            transform: translateY(-5px) rotateX(2deg);
+            box-shadow: 0 12px 40px rgba(0, 191, 174, 0.12);
+        }
+
+        .form-group {
+            width: 80%;
+            margin-bottom: 1.2rem;
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transform: translateZ(20px);
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 191, 174, 0.2);
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            transform: translateZ(10px);
+        }
+
+        input::placeholder {
+            color: #888;
+        }
+
+        input:focus {
+            border-color: #00bfae;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 191, 174, 0.1);
+            transform: translateY(-2px) translateZ(20px);
+        }
+
+        input[type="file"] {
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px dashed rgba(0, 191, 174, 0.3);
+        }
+
+        input[type="file"]:hover {
+            background: rgba(255, 255, 255, 1);
+            border-color: #00bfae;
+            transform: translateY(-2px) translateZ(20px);
+        }
+
+        button {
+            background: linear-gradient(135deg, #00bfae, #00a89a);
+            color: white;
+            font-family: "Segoe UI", sans-serif;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 191, 174, 0.15);
+            margin-top: 1rem;
+            transform: translateZ(30px);
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent
+            );
+            transition: 0.5s;
+        }
+
+        button:hover {
+            transform: translateY(-2px) translateZ(40px);
+            box-shadow: 0 6px 20px rgba(0, 191, 174, 0.2);
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+
+        button:active {
+            transform: translateY(0) translateZ(30px);
+        }
+
+        .error {
+            color: #ff4444;
+            text-align: center;
+            margin-bottom: 15px;
+            font-weight: 500;
+            animation: shake 0.5s ease-in-out;
+            background: rgba(255, 68, 68, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            width: 100%;
+            transform: translateZ(20px);
+        }
+
+        h2, h4 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #00bfae;
+            font-size: 2rem;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 15px;
+            transform: translateZ(30px);
+        }
+
+        h2::after, h4::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #00bfae, #00a89a);
+            border-radius: 2px;
+        }
+
+        h3 {
+            margin: 30px 0;
+            text-align: center;
+            color: #00bfae;
+            font-size: 1.5rem;
+            font-weight: 500;
+            position: relative;
+            transform: translateZ(20px);
+        }
+
+        h3::before, h3::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 60px;
+            height: 1px;
+            background: rgba(0, 191, 174, 0.3);
+        }
+
+        h3::before {
+            left: calc(50% - 100px);
+        }
+
+        h3::after {
+            right: calc(50% - 100px);
+        }
+
+        @keyframes formAppear {
+            from {
+                opacity: 0;
+                transform: translateY(30px) rotateX(-10deg);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) rotateX(0);
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0) translateZ(20px); }
+            25% { transform: translateX(-5px) translateZ(20px); }
+            75% { transform: translateX(5px) translateZ(20px); }
+        }
+
+        @media (max-width: 768px) {
+            .forms-wrapper {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .form-section {
+                width: 100%;
+                max-width: 400px;
+            }
+
+            form {
+                padding: 2rem 1.5rem;
+            }
+
+            h2 {
+                font-size: 1.8rem;
+            }
+
+            h3 {
+                font-size: 1.3rem;
+            }
+
+            h3::before, h3::after {
+                width: 40px;
+            }
+
+            h3::before {
+                left: calc(50% - 80px);
+            }
+
+            h3::after {
+                right: calc(50% - 80px);
+            }
+
+            .navbar {
+                padding: 1rem;
+            }
+
+            .navbar a {
+                margin-left: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <img src="https://media.licdn.com/dms/image/v2/D560BAQHOlu9Kvt3j-w/company-logo_200_200/company-logo_200_200/0/1723693199513/adiyen_logo?e=2147483647&v=beta&t=kEVRi6nTp9pxkLUMhIIA2aAZ812sK86X5bkAlZj5hqE" alt="Adiyen Logo" class="navbar-logo">
+            <h1>Login/Create Profile</h1>
+        </div>
+        <div>
+            <a href="https://adiyen.tech/">Home</a>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="forms-wrapper">
+            <div class="form-section">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <h2>Create Profile</h2>
+                    {% if error %}<p class="error">{{ error }}</p>{% endif %}
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" placeholder="Enter your email" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" placeholder="Create a password" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="first_name">First Name</label>
+                        <input type="text" id="first_name" name="first_name" placeholder="Enter your first name" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name">Last Name</label>
+                        <input type="text" id="last_name" name="last_name" placeholder="Enter your last name (optional)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="dob">Date of Birth</label>
+                        <input type="date" id="dob" name="dob" />
+                    </div>
+                    <button type="submit">Create Account</button>
+                </form>
+            </div>
+
+            <div class="form-section">
+                <h3>Already have an account?</h3>
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <h4>Login</h4>
+                    {% if error %}<p class="error">{{ error }}</p>{% endif %}
+                    <div class="form-group">
+                        <label for="login_email">Email Address</label>
+                        <input type="email" id="login_email" name="email" placeholder="Enter your email" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="login_password">Password</label>
+                        <input type="password" id="login_password" name="password" placeholder="Enter your password" required />
+                    </div>
+                    <button type="submit">Sign In</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

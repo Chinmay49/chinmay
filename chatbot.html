@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health & Wellness Chatbot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'health-teal': '#4CC9B0',
+                        'health-blue': '#2A93D5',
+                        'health-green': '#37B76F',
+                        'health-light': '#EBF7F5',
+                        'health-accent': '#FF6B6B'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 1.0s ease;
+        }
+        .animate-pulse-slow {
+            animation: pulse 3s infinite;
+        }
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+        .health-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%234cc9b0' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        .heartbeat-icon {
+            position: relative;
+            display: inline-block;
+            margin-right: 5px;
+            animation: pulse 1.5s infinite;
+        }
+
+        .heartbeat-line {
+            display: inline-block;
+            height: 2px;
+            width: 16px;
+            background: #FF6B6B;
+            vertical-align: middle;
+            margin: 0 2px;
+            animation: pulse 1.5s infinite;
+        }
+        .typing-animation-words {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 2px solid #4CC9B0; /* Typing cursor */
+  animation:
+    typing-words 3s steps(5, end),
+    blink 0.7s step-end infinite;
+}
+
+/* Animate width word-by-word (5 steps = 5 words) */
+@keyframes typing-words {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+/* Cursor blinking */
+@keyframes blink {
+  0%, 100% { border-color: transparent }
+  50% { border-color: #4CC9B0 }
+}
+.user-message {
+    background: linear-gradient(135deg, #76D7C4 0%, #4CC9B0 100%);
+    color: #fff;
+    max-width: 35%;
+    margin-left: auto;
+    margin-bottom: 1rem;
+    text-align: left;
+    border-radius: 15px 15px 0 15px;
+    padding: 1rem 1.2rem;
+    box-shadow: 0 2px 8px rgba(76, 201, 176, 0.15);
+    position: relative;
+    animation: messageSlideIn 0.3s ease-out;
+    font-size: 0.95rem;
+    font-weight: 500;
+    line-height: 1.5;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.user-message::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: -8px;
+    width: 16px;
+    height: 16px;
+    background: linear-gradient(135deg, #4CC9B0 0%, #76D7C4 100%);
+    transform: rotate(45deg);
+    border-radius: 0 0 0 4px;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes messageSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px) translateX(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) translateX(0);
+    }
+}
+
+/* Add hover effect */
+.user-message:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(76, 201, 176, 0.2);
+    transition: all 0.3s ease;
+}
+
+/* Add message time styling */
+.user-message .message-time {
+    font-size: 0.75rem;
+    opacity: 0.8;
+    margin-top: 0.5rem;
+    text-align: right;
+    font-style: italic;
+}
+
+/* Add typing indicator */
+.user-message.typing {
+    background: linear-gradient(135deg, #76D7C4 0%, #4CC9B0 100%);
+    padding: 1rem;
+}
+
+.user-message.typing::after {
+    content: '...';
+    animation: typing 1.5s infinite;
+}
+
+@keyframes typing {
+    0% { content: '.'; }
+    33% { content: '..'; }
+    66% { content: '...'; }
+}
+.animate-fade-in2 {
+animation: fadeIn 1.5s ease;
+}
+.animate-fade-in3 {
+animation: fadeIn 1.7s ease;
+}
+
+.profile-menu .dropdown {
+    transform-origin: top right;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.profile-menu .dropdown.show {
+    transform: scale(1);
+    opacity: 1;
+    visibility: visible;
+}
+
+.profile-menu .dropdown.hide {
+    transform: scale(0.95);
+    opacity: 0;
+    visibility: hidden;
+}
+
+.profile-menu .menu-toggle.active i.fa-chevron-down {
+    transform: rotate(180deg);
+}
+
+.profile-menu .menu-toggle {
+    transition: all 0.3s ease;
+}
+
+.profile-menu .menu-toggle:hover {
+    transform: translateY(-1px);
+}
+
+.profile-menu .menu-toggle:active {
+    transform: translateY(0);
+}
+
+.profile-menu .dropdown-item {
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-menu .dropdown-item::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--health-teal), transparent);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.profile-menu .dropdown-item:hover::after {
+    transform: scaleX(1);
+}
+
+        /* Add these styles to your existing styles */
+        .upload-label {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-label::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+
+        .upload-label:hover::after {
+            transform: translateX(100%);
+        }
+
+        #user-input:focus {
+            background: white;
+            box-shadow: 0 0 0 2px rgba(76, 201, 176, 0.2);
+        }
+
+        #send-button:not(:disabled) {
+            background: linear-gradient(135deg, #4CC9B0 0%, #37B76F 100%);
+        }
+
+        #send-button:not(:disabled):hover {
+            transform: translateY(-1px);
+        }
+
+        #send-button:not(:disabled):active {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="font-['Segoe_UI',sans-serif] bg-gradient-to-r from-[#e8f8f5] to-[#d1f2eb] health-pattern flex flex-col items-center m-0 p-0 h-screen overflow-hidden">
+ <div class="fixed inset-0 flex justify-center items-center pointer-events-none z-0">
+  <i class="animate-fade-in fas fa-heartbeat text-green-300/40 text-9xl"></i>
+</div>   
+</body>
+    
+    
+    <!-- Health-themed decorative elements -->
+    <div class="animate-fade-in absolute top-0 left-0 w-full h-16 bg-gradient-to-r from-health-teal/20 to-health-blue/20 -z-10"></div>
+    <div class="animate-fade-in absolute bottom-0 left-0 w-full h-16 bg-gradient-to-r from-health-blue/20 to-health-teal/20 -z-10"></div>
+    
+    <div class="animate-fade-in3 rounded-full bg-health-teal/10 w-64 h-64 absolute -top-32 -left-32 -z-10"></div>
+    <div class="animate-fade-in3 rounded-full bg-health-blue/10 w-96 h-96 absolute -bottom-48 -right-48 -z-10"></div>
+    
+    <h2 class="animate-fade-in2 text-health-teal font-bold text-2xl text-right mr-[50px] my-5 flex items-center justify-end">
+        
+        <i class="heartbeat-icon fas fa-heartbeat text-health-accent mr-2"></i>HealthBot
+    </h2>
+    
+    <div id="welcome-message" class="font-['Helvetica_Neue',Helvetica,Arial,sans-serif] text-[1.2rem] font-semibold text-[#353740] text-right mr-[600px] pl-[50px]"></div>
+
+    <div id="chatbox" class="relative z-10 flex-1 animate-fade-in w-[90%] max-w-[1200px] bg-transparent mt-[10px] ml-0 mr-[50px] p-5 border-none rounded-xl overflow-y-auto h-[65vh]">
+        <!-- Chat messages will appear here -->
+    </div>
+
+    <form id="chat-form" enctype="multipart/form-data" class="animate-fade-in flex justify-center items-center gap-[10px] w-[90%] max-w-[800px] mt-[15px] mr-[50px] mb-[15px] bg-white/95 backdrop-blur-sm py-[10px] px-[15px] rounded-[20px] shadow-lg border border-health-teal/20 transition-all duration-300 hover:shadow-xl">
+        <input type="text" 
+               id="user-input" 
+               name="text" 
+               placeholder="Ask about your health & wellness..." 
+               class="flex-1 py-[12px] px-[20px] border-none rounded-[15px] bg-health-light/50 text-[15px] outline-none focus:ring-2 focus:ring-health-teal/30 transition-all duration-300 placeholder:text-gray-400"
+               oninput="checkInput()">
+        
+        <label for="image-upload" class="upload-label cursor-pointer p-3 bg-health-blue/10 text-health-blue rounded-full shadow-sm hover:bg-health-blue/20 transition-all duration-300 hover:scale-105" title="Upload Image">
+            <i class="fas fa-image text-lg"></i>
+        </label>
+        <input type="file" 
+               id="image-upload" 
+               name="image" 
+               accept="image/*" 
+               class="hidden"
+               onchange="checkInput()">
+        
+        <button type="submit" 
+                id="send-button"
+                title="Send" 
+                disabled
+                class="bg-health-teal/50 border-none rounded-full py-[12px] px-[20px] cursor-not-allowed text-white text-lg shadow-sm transition-all duration-300 flex items-center gap-2 disabled:opacity-50 disabled:hover:scale-100 enabled:hover:bg-health-green enabled:hover:shadow-lg enabled:hover:scale-105 enabled:cursor-pointer">
+            <span>Send</span>
+            <i class="fas fa-paper-plane"></i>
+        </button>
+    </form>
+
+    <div id="loader" class="loader hidden mx-auto mt-[10px] border-4 border-[#f3f3f3] border-t-health-teal rounded-full w-[30px] h-[30px] animate-spin"></div>
+
+    <!-- Profile Menu -->
+    <div class="profile-menu fixed top-[20px] right-[30px] z-[999]">
+        <div class="menu-toggle flex items-center gap-2 px-4 py-2 bg-white/90 backdrop-blur-sm text-health-teal cursor-pointer select-none rounded-full shadow-md hover:bg-white hover:shadow-lg transition-all duration-300 border border-health-teal/10" onclick="toggleDropdown()">
+            <i class="fas fa-user-circle text-lg"></i>
+            <span class="font-medium">Profile</span>
+            <i class="fas fa-chevron-down text-sm transition-transform duration-300"></i>
+        </div>
+        
+        <div id="profileDropdown" class="dropdown hidden absolute top-[50px] right-0 bg-white/95 backdrop-blur-sm border border-health-teal/20 rounded-xl p-5 w-[280px] shadow-xl transform origin-top-right transition-all duration-300 scale-95 opacity-0">
+            <div class="relative">
+                <div class="bg-gradient-to-br from-health-teal/20 to-health-blue/20 rounded-full p-1.5 mb-4 mx-auto w-20 h-20 flex items-center justify-center">
+                    <img src="https://fontawesome.com/social/laptop-medical?f=classic&s=&v=5" alt="Picture" class="w-[72px] h-[72px] rounded-full border-2 border-white shadow-md object-cover">
+                </div>
+                
+                <div class="text-center mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800">{{ user.first_name }} {{ user.last_name }}</h3>
+                    <p class="text-sm text-gray-600">{{ user.email }}</p>
+                </div>
+                
+                
+                <div class="mt-4 pt-4 border-t border-gray-100">
+                    <button onclick="logout()" class="flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-gradient-to-r from-health-teal to-health-blue text-white font-medium rounded-lg cursor-pointer hover:shadow-lg hover:scale-[1.02] transition-all duration-300">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+
+        
+
+
+
+<script>
+        // Chat form functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatForm = document.getElementById('chat-form');
+            const userInput = document.getElementById('user-input');
+            const imageUpload = document.getElementById('image-upload');
+            const sendButton = document.getElementById('send-button');
+            const chatbox = document.getElementById('chatbox');
+            const loader = document.getElementById('loader');
+
+            // Function to check input and enable/disable send button
+            function checkInput() {
+                const hasText = userInput.value.trim() !== '';
+                const hasImage = imageUpload.files.length > 0;
+                sendButton.disabled = !(hasText || hasImage);
+                
+                if (!sendButton.disabled) {
+                    sendButton.classList.remove('bg-health-teal/50');
+                    sendButton.classList.add('bg-health-teal');
+                } else {
+                    sendButton.classList.add('bg-health-teal/50');
+                    sendButton.classList.remove('bg-health-teal');
+                }
+            }
+
+            // Function to format message content
+            function formatMessageContent(content) {
+                // Generalized section keyword patterns
+                const sectionPatterns = [
+                    /🕒/,       // Any time-related symbol
+                    /Breakfast/i,
+                    /Lunch/i,
+                    /Dinner/i,
+                    /Meal/i,
+                    /Morning/i,
+                    /Evening/i,
+                    /Brunch/i,
+                    /Snack/i
+                ];
+
+                let lines = content
+                    .replace(/\*/g, '') // Remove all asterisks
+                    .split('\n')
+                    .filter(line => line.trim() !== '');
+
+                let formattedMessage = '';
+                let sectionCount = 1;
+
+                lines.forEach(line => {
+                    line = line.trim();
+
+                    // Section detection
+                    if (sectionPatterns.some(pattern => pattern.test(line))) {
+                        formattedMessage += `
+                            <div class="section-header">
+                                <span class="section-number">${sectionCount}.</span>
+                                <span class="section-title">${line}</span>
+                            </div>`;
+                        sectionCount++;
+                    }
+                    // Sub-items
+                    else if (/^\s*- /.test(line)) {
+                        const item = line.replace(/^\s*- /, '');
+                        formattedMessage += `
+                            <div class="section-item">
+                                <span class="item-bullet">•</span>
+                                <span class="item-text">${item}</span>
+                            </div>`;
+                    }
+                    // Key-value pairs
+                    else if (line.includes(':')) {
+                        const [key, value] = line.split(/:(.*)/);
+                        formattedMessage += `
+                            <div class="key-value-pair">
+                                <span class="key">${key.trim()}:</span>
+                                <span class="value">${value.trim()}</span>
+                            </div>`;
+                    }
+                    // Regular text
+                    else {
+                        formattedMessage += `
+                            <div class="regular-text">${line}</div>`;
+                    }
+                });
+
+                return formattedMessage;
+            }
+
+            // Function to add a message to the chat
+            function addMessage(content, isUser = true, isImage = false) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+                
+                // Add timestamp
+                const now = new Date();
+                const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                
+                if (isImage) {
+                    messageDiv.innerHTML = `
+                        <div class="message-content">
+                            <img src="${content}" alt="Response Image" class="response-image">
+                        </div>
+                        <div class="message-time">${timeString}</div>
+                    `;
+                } else {
+                    messageDiv.innerHTML = `
+                        <div class="message-content">
+                            ${formatMessageContent(content)}
+                        </div>
+                        <div class="message-time">${timeString}</div>
+                    `;
+                }
+                
+                chatbox.appendChild(messageDiv);
+                chatbox.scrollTop = chatbox.scrollHeight;
+            }
+
+            // Function to show typing indicator
+            function showTypingIndicator() {
+                const typingDiv = document.createElement('div');
+                typingDiv.className = 'message bot-message typing';
+                typingDiv.id = 'typing-indicator';
+                chatbox.appendChild(typingDiv);
+                chatbox.scrollTop = chatbox.scrollHeight;
+            }
+
+            // Function to remove typing indicator
+            function removeTypingIndicator() {
+                const typingIndicator = document.getElementById('typing-indicator');
+                if (typingIndicator) {
+                    typingIndicator.remove();
+                }
+            }
+
+            // Handle form submission
+            chatForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+                const userMessage = userInput.value.trim();
+                const hasImage = imageUpload.files.length > 0;
+
+                if (!userMessage && !hasImage) return;
+
+                // Add user message to chat
+                if (hasImage) {
+                    const imageFile = imageUpload.files[0];
+                    const imageUrl = URL.createObjectURL(imageFile);
+                    addMessage(imageUrl, true, true);
+                } else {
+                    addMessage(userMessage, true);
+                }
+
+                // Show loader
+                loader.style.display = 'block';
+                sendButton.disabled = true;
+
+                try {
+                    // Show typing indicator
+                    showTypingIndicator();
+
+                    // Get CSRF token
+                    const csrftoken = getCookie('csrftoken');
+
+                    // Send request to server
+                    const response = await fetch('/chatbot/', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': csrftoken
+                        },
+                        body: formData
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+
+                    const data = await response.json();
+
+                    // Remove typing indicator
+                    removeTypingIndicator();
+
+                    // Add bot response to chat
+                    if (data.message) {
+                        addMessage(data.message, false);
+                    }
+
+                    // Handle image response if present
+                    if (data.image_url) {
+                        addMessage(data.image_url, false, true);
+                    }
+
+                } catch (error) {
+                    console.error('Error:', error);
+                    removeTypingIndicator();
+                    addMessage('Sorry, something went wrong. Please try again.', false);
+                } finally {
+                    // Hide loader
+                    loader.style.display = 'none';
+                    
+                    // Reset form
+                    userInput.value = '';
+                    imageUpload.value = '';
+                    checkInput();
+                }
+            });
+
+            // Add input event listeners
+            userInput.addEventListener('input', checkInput);
+            imageUpload.addEventListener('change', checkInput);
+
+            // Initial check
+            checkInput();
+        });
+
+        // Helper function to get CSRF token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const firstName = "{{ first_name|default:'there' }}";
+        const message = `Hello ${firstName}!!, welcome to HealthBot, how can I help you?`;
+        const greetingElement = document.getElementById("welcome-message");
+
+        if (greetingElement) {
+            let index = 0;
+            function typeMessage() {
+                if (index < message.length) {
+                    greetingElement.textContent += message.charAt(index);
+                    index++;
+                    setTimeout(typeMessage, 50); // typing speed
+                }
+            }
+            typeMessage();
+        }
+    });
+    //greeting disappearing after 1st message
+    document.addEventListener('DOMContentLoaded', function () {
+            const chatForm = document.getElementById('chat-form');
+            const userInput = document.getElementById('user-input');
+            const welcomeMessage = document.getElementById('welcome-message');
+            const chatOutput = document.getElementById('chat-output');
+
+            let hasSentFirstMessage = false;
+
+            chatForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                const message = userInput.value.trim();
+
+                if (message !== '') {
+                    if (!hasSentFirstMessage) {
+                        welcomeMessage.style.display = 'none';
+                        hasSentFirstMessage = true;
+                    }
+
+                    // Optionally show user message (simulate chatbot behavior)
+                    const userMsgDiv = document.createElement('div');
+                    userMsgDiv.textContent = "You: " + message;
+                    chatOutput.appendChild(userMsgDiv);
+
+                    userInput.value = '';
+                }
+            });
+        });
+//typing bot response
+function typeBotResponse(message, element, typingSpeed = 20) {
+    element.innerHTML = ''; // Clear existing content
+    let index = 0;
+
+    function type() {
+        if (index < message.length) {
+            const char = message.charAt(index);
+            element.innerHTML += (char === '\n') ? '<br>' : char;
+            index++;
+            setTimeout(type, typingSpeed);
+        }
+    }
+
+    type();
+}
+const botMessageElement = document.getElementById("bot-message");
+
+typeBotResponse(botMessageElement);
+function toggleDropdown() {
+    const dropdown = document.getElementById("profileDropdown");
+    const menuToggle = document.querySelector(".menu-toggle");
+    
+    if (dropdown.style.display === "block") {
+        dropdown.style.display = "none";
+        menuToggle.classList.remove("active");
+    } else {
+        dropdown.style.display = "block";
+        menuToggle.classList.add("active");
+        dropdown.classList.add("show");
+    }
+}
+
+function logout() {
+  // Optional: Clear session or make a logout request
+  window.location.href = "/logout/"; // Adjust URL based on Django routing
+}
+let currentSessionId = null;
+
+async function startNewChat() {
+    const res = await fetch('/new_chat/');
+    const data = await res.json();
+    currentSessionId = data.session_id;
+    document.getElementById('chatbox').innerHTML = '';  // Clear chatbox
+    loadSessions();  // Refresh sidebar
+}
+
+async function sendMessage(message) {
+    const res = await fetch('/send_message/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message, session_id: currentSessionId })
+    });
+    const data = await res.json();
+    appendMessage('user', message);
+    typeBotMessage(data.message);
+}
+
+async function loadSessions() {
+    const res = await fetch('/get_sessions/');
+    const data = await res.json();
+    const sessionList = document.getElementById('session-list');
+    sessionList.innerHTML = '';
+    data.sessions.forEach(session => {
+        const btn = document.createElement('button');
+        btn.innerText = `Chat ${session.id} - ${session.created_at}`;
+        btn.onclick = () => loadSessionMessages(session.id);
+        sessionList.appendChild(btn);
+    });
+}
+
+async function loadSessionMessages(sessionId) {
+    currentSessionId = sessionId;
+    const res = await fetch(`/get_session_messages/${sessionId}/`);
+    const data = await res.json();
+    document.getElementById('chatbox').innerHTML = '';
+    data.messages.forEach(msg => appendMessage(msg.sender, msg.message));
+}
+
+function appendMessage(sender, message) {
+    const chatbox = document.getElementById('chatbox');
+    const msg = document.createElement('div');
+    msg.className = sender;
+    msg.innerText = message;
+    chatbox.appendChild(msg);
+}
+
+function typeBotMessage(message) {
+    const chatbox = document.getElementById('chatbox');
+    const msg = document.createElement('div');
+    msg.className = 'bot';
+    chatbox.appendChild(msg);
+
+    let index = 0;
+    function typeChar() {
+        if (index < message.length) {
+            msg.innerHTML += message.charAt(index);
+            index++;
+            setTimeout(typeChar, 30);
+        }
+    }
+    typeChar();
+}
+
+window.onload = () => {
+    startNewChat();
+    loadSessions();
+}
+
+// Profile Menu Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const profileMenu = {
+        dropdown: document.getElementById("profileDropdown"),
+        menuToggle: document.querySelector(".menu-toggle"),
+        isOpen: false,
+        
+        init() {
+            this.setupEventListeners();
+            this.setupClickOutside();
+        },
+        
+        setupEventListeners() {
+            this.menuToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.toggle();
+            });
+            
+            // Add hover effect for menu items
+            const menuItems = this.dropdown.querySelectorAll('a, button');
+            menuItems.forEach(item => {
+                item.addEventListener('mouseenter', () => {
+                    item.style.transform = 'translateX(5px)';
+                });
+                item.addEventListener('mouseleave', () => {
+                    item.style.transform = 'translateX(0)';
+                });
+            });
+        },
+        
+        setupClickOutside() {
+            document.addEventListener('click', (e) => {
+                if (this.isOpen && !this.dropdown.contains(e.target) && !this.menuToggle.contains(e.target)) {
+                    this.close();
+                }
+            });
+        },
+        
+        toggle() {
+            if (this.isOpen) {
+                this.close();
+            } else {
+                this.open();
+            }
+        },
+        
+        open() {
+            this.isOpen = true;
+            this.dropdown.style.display = 'block';
+            this.menuToggle.classList.add('active');
+            
+            // Force reflow
+            this.dropdown.offsetHeight;
+            
+            this.dropdown.classList.remove('hide');
+            this.dropdown.classList.add('show');
+            
+            // Add keyboard navigation
+            this.setupKeyboardNavigation();
+        },
+        
+        close() {
+            this.isOpen = false;
+            this.menuToggle.classList.remove('active');
+            this.dropdown.classList.remove('show');
+            this.dropdown.classList.add('hide');
+            
+            // Remove keyboard navigation
+            this.removeKeyboardNavigation();
+            
+            // Wait for animation to complete before hiding
+            setTimeout(() => {
+                if (!this.isOpen) {
+                    this.dropdown.style.display = 'none';
+                }
+            }, 300);
+        },
+        
+        setupKeyboardNavigation() {
+            const focusableElements = this.dropdown.querySelectorAll('a, button');
+            const firstElement = focusableElements[0];
+            const lastElement = focusableElements[focusableElements.length - 1];
+            
+            this.dropdown.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    this.close();
+                }
+                
+                if (e.key === 'Tab') {
+                    if (e.shiftKey && document.activeElement === firstElement) {
+                        e.preventDefault();
+                        lastElement.focus();
+                    } else if (!e.shiftKey && document.activeElement === lastElement) {
+                        e.preventDefault();
+                        firstElement.focus();
+                    }
+                }
+            });
+            
+            // Focus first element when opened
+            firstElement.focus();
+        },
+        
+        removeKeyboardNavigation() {
+            this.dropdown.removeEventListener('keydown', () => {});
+        }
+    };
+    
+    // Initialize profile menu
+    profileMenu.init();
+    
+    // Enhanced logout functionality
+    window.logout = async function() {
+        try {
+            const response = await fetch('/logout/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            });
+            
+            if (response.ok) {
+                // Clear any local storage or session data
+                localStorage.clear();
+                sessionStorage.clear();
+                
+                // Redirect to login page
+                window.location.href = '/auth_page/';
+            } else {
+                throw new Error('Logout failed');
+            }
+        } catch (error) {
+            console.error('Logout error:', error);
+            alert('Failed to logout. Please try again.');
+        }
+    };
+    
+    // Profile photo handling
+    const profilePhoto = document.querySelector('.profile-menu img');
+    const firstName = "{{ user.first_name }}";
+    
+    // Function to get default profile photo based on first name
+    function getDefaultProfilePhoto(firstName) {
+        if (!firstName) return '/static/images/default-profile.png';
+        
+        const firstLetter = firstName.charAt(0).toLowerCase();
+        // Check if the letter is a-z
+        if (!/^[a-z]$/.test(firstLetter)) {
+            return '/static/images/default-profile.png';
+        }
+        return `/static/images/profile/${firstLetter}.png`;
+    }
+
+    // Function to handle profile photo loading
+    function handleProfilePhoto() {
+        if (!profilePhoto) return;
+
+        // Set initial source
+        const initialSrc = profilePhoto.src;
+        
+        // Handle loading error
+        profilePhoto.onerror = function() {
+            console.log('Profile photo failed to load, using default');
+            this.src = getDefaultProfilePhoto(firstName);
+            this.alt = `${firstName}'s Profile Picture`;
+        };
+
+        // Handle successful load
+        profilePhoto.onload = function() {
+            console.log('Profile photo loaded successfully');
+        };
+
+        // If no initial source is set, use default
+        if (!initialSrc || initialSrc === '') {
+            profilePhoto.src = getDefaultProfilePhoto(firstName);
+        }
+    }
+
+    // Initialize profile photo handling
+    handleProfilePhoto();
+
+    // Update profile photo when user changes
+    function updateProfilePhoto(newFirstName) {
+        if (profilePhoto) {
+            profilePhoto.src = getDefaultProfilePhoto(newFirstName);
+        }
+    }
+
+    // Expose update function globally if needed
+    window.updateProfilePhoto = updateProfilePhoto;
+});
+
+    </script>
+</body>
+</html>
